@@ -28,7 +28,7 @@ function homeScreen() {
 }
 
 function createUserScreen() {
-  appDiv.innerHTML = `
+	appDiv.innerHTML = `
 	<h2>Create User</h2>
 	<label>Username: <input type="text" id="usernameInput" maxlength="32" style="margin-bottom:12px;"></label><br>
 	<button id="eLevelBtn">E Level</button>
@@ -37,10 +37,10 @@ function createUserScreen() {
 	<button id="backBtn">Back</button>
 	<div id="levelForm"></div>
   `;
-  document.getElementById("eLevelBtn").onclick = () => eLevelForm();
-  document.getElementById("colorLevelBtn").onclick = () => colorLevelForm();
-  document.getElementById("faceLevelBtn").onclick = () => faceLevelForm();
-  document.getElementById("backBtn").onclick = homeScreen;
+	document.getElementById("eLevelBtn").onclick = () => eLevelForm();
+	document.getElementById("colorLevelBtn").onclick = () => colorLevelForm();
+	document.getElementById("faceLevelBtn").onclick = () => faceLevelForm();
+	document.getElementById("backBtn").onclick = homeScreen;
 }
 
 function eLevelForm(userId = null, existingData = null) {
@@ -87,30 +87,34 @@ function eLevelForm(userId = null, existingData = null) {
 				Number(document.querySelector(`[name="item${i}"]`).value)
 			);
 		}
-	if (userId) {
-	  await db.ref(`users/${userId}/eLevel`).set(items);
-	  await db.ref(`users/${userId}/updatedAt`).set(new Date().toISOString());
-	  alert("E Level data updated!");
-	  editUserScreen(userId, {
-		...(await db.ref(`users/${userId}`).get()).val(),
-	  });
-	} else {
-	  const username = document.getElementById("usernameInput").value.trim();
-	  if (!username) {
-		alert("Please enter a username.");
-		return;
-	  }
-	  const now = new Date().toISOString();
-	  const userRef = db.ref("users").push();
-	  await userRef.set({
-		username,
-		createdAt: now,
-		updatedAt: now,
-		eLevel: items
-	  });
-	  alert("E Level data saved!");
-	  homeScreen();
-	}
+		if (userId) {
+			await db.ref(`users/${userId}/eLevel`).set(items);
+			await db
+				.ref(`users/${userId}/updatedAt`)
+				.set(new Date().toISOString());
+			alert("E Level data updated!");
+			editUserScreen(userId, {
+				...(await db.ref(`users/${userId}`).get()).val(),
+			});
+		} else {
+			const username = document
+				.getElementById("usernameInput")
+				.value.trim();
+			if (!username) {
+				alert("Please enter a username.");
+				return;
+			}
+			const now = new Date().toISOString();
+			const userRef = db.ref("users").push();
+			await userRef.set({
+				username,
+				createdAt: now,
+				updatedAt: now,
+				eLevel: items,
+			});
+			alert("E Level data saved!");
+			homeScreen();
+		}
 	};
 }
 
@@ -187,30 +191,34 @@ function colorLevelForm(userId = null, existingData = null) {
 			}
 			items.push(colors);
 		}
-	if (userId) {
-	  await db.ref(`users/${userId}/colorLevel`).set(items);
-	  await db.ref(`users/${userId}/updatedAt`).set(new Date().toISOString());
-	  alert("Color Level data updated!");
-	  editUserScreen(userId, {
-		...(await db.ref(`users/${userId}`).get()).val(),
-	  });
-	} else {
-	  const username = document.getElementById("usernameInput").value.trim();
-	  if (!username) {
-		alert("Please enter a username.");
-		return;
-	  }
-	  const now = new Date().toISOString();
-	  const userRef = db.ref("users").push();
-	  await userRef.set({
-		username,
-		createdAt: now,
-		updatedAt: now,
-		colorLevel: items
-	  });
-	  alert("Color Level data saved!");
-	  homeScreen();
-	}
+		if (userId) {
+			await db.ref(`users/${userId}/colorLevel`).set(items);
+			await db
+				.ref(`users/${userId}/updatedAt`)
+				.set(new Date().toISOString());
+			alert("Color Level data updated!");
+			editUserScreen(userId, {
+				...(await db.ref(`users/${userId}`).get()).val(),
+			});
+		} else {
+			const username = document
+				.getElementById("usernameInput")
+				.value.trim();
+			if (!username) {
+				alert("Please enter a username.");
+				return;
+			}
+			const now = new Date().toISOString();
+			const userRef = db.ref("users").push();
+			await userRef.set({
+				username,
+				createdAt: now,
+				updatedAt: now,
+				colorLevel: items,
+			});
+			alert("Color Level data saved!");
+			homeScreen();
+		}
 	};
 }
 
@@ -289,13 +297,13 @@ function faceLevelForm(userId = null, existingData = null) {
 				const input = document.querySelector(`[name="face${i}_${j}"]`);
 				const file = input.files[0];
 				if (file) {
-					// Upload to Firebase Storage
-					const storageRef = storage.ref(
-						`faces/${Date.now()}_${file.name}`
-					);
-					await storageRef.put(file);
-					const url = await storageRef.getDownloadURL();
-					faces.push(url);
+					// Upload to Cloudinary
+					const data = await uploadImage(file);
+					if (data.secure_url) {
+						faces.push(data.secure_url);
+					} else {
+						faces.push("");
+					}
 				} else if (
 					existingData &&
 					existingData[i] &&
@@ -308,36 +316,40 @@ function faceLevelForm(userId = null, existingData = null) {
 			}
 			items.push(faces);
 		}
-	if (userId) {
-	  await db.ref(`users/${userId}/faceLevel`).set(items);
-	  await db.ref(`users/${userId}/updatedAt`).set(new Date().toISOString());
-	  alert("Face Level data updated!");
-	  editUserScreen(userId, {
-		...(await db.ref(`users/${userId}`).get()).val(),
-	  });
-	} else {
-	  const username = document.getElementById("usernameInput").value.trim();
-	  if (!username) {
-		alert("Please enter a username.");
-		return;
-	  }
-	  const now = new Date().toISOString();
-	  const userRef = db.ref("users").push();
-	  await userRef.set({
-		username,
-		createdAt: now,
-		updatedAt: now,
-		faceLevel: items
-	  });
-	  alert("Face Level data saved!");
-	  homeScreen();
-	}
+		if (userId) {
+			await db.ref(`users/${userId}/faceLevel`).set(items);
+			await db
+				.ref(`users/${userId}/updatedAt`)
+				.set(new Date().toISOString());
+			alert("Face Level data updated!");
+			editUserScreen(userId, {
+				...(await db.ref(`users/${userId}`).get()).val(),
+			});
+		} else {
+			const username = document
+				.getElementById("usernameInput")
+				.value.trim();
+			if (!username) {
+				alert("Please enter a username.");
+				return;
+			}
+			const now = new Date().toISOString();
+			const userRef = db.ref("users").push();
+			await userRef.set({
+				username,
+				createdAt: now,
+				updatedAt: now,
+				faceLevel: items,
+			});
+			alert("Face Level data saved!");
+			homeScreen();
+		}
 	};
 }
 
 function editUserScreen(userId, userData = {}) {
-	appDiv.innerHTML = `
-	<h2>Edit User: ${userId}</h2>
+appDiv.innerHTML = `
+	<h2>Edit User: ${userData.username ? userData.username : userId}</h2>
 	<button id="eLevelBtn">E Level</button>
 	<button id="colorLevelBtn">Color Level</button>
 	<button id="faceLevelBtn">Face Level</button>
@@ -354,26 +366,46 @@ function editUserScreen(userId, userData = {}) {
 }
 
 async function listUsersScreen() {
-  appDiv.innerHTML = `<h2>List of Users</h2><ul id="usersList"></ul><button id="backBtn">Back</button>`;
-  document.getElementById("backBtn").onclick = homeScreen;
-  const usersList = document.getElementById("usersList");
-  const snapshot = await db.ref("users").once("value");
-  if (snapshot.exists()) {
-	const users = snapshot.val();
-	Object.entries(users).forEach(([key, value]) => {
-	  const li = document.createElement("li");
-	  const username = value.username || key;
-	  const createdAt = value.createdAt ? new Date(value.createdAt).toLocaleString() : "-";
-	  const updatedAt = value.updatedAt ? new Date(value.updatedAt).toLocaleString() : createdAt;
-	  li.innerHTML = `<span style="cursor:pointer;color:#3182ce;text-decoration:underline;">${username}</span><br>
+	appDiv.innerHTML = `<h2>List of Users</h2><ul id="usersList"></ul><button id="backBtn">Back</button>`;
+	document.getElementById("backBtn").onclick = homeScreen;
+	const usersList = document.getElementById("usersList");
+	const snapshot = await db.ref("users").once("value");
+	if (snapshot.exists()) {
+		const users = snapshot.val();
+		Object.entries(users).forEach(([key, value]) => {
+			const li = document.createElement("li");
+			const username = value.username || key;
+			const createdAt = value.createdAt
+				? new Date(value.createdAt).toLocaleString()
+				: "-";
+			const updatedAt = value.updatedAt
+				? new Date(value.updatedAt).toLocaleString()
+				: createdAt;
+			li.innerHTML = `<span style="cursor:pointer;color:#3182ce;text-decoration:underline;">${username}</span><br>
 		<small>Created: ${createdAt}</small><br>
 		<small>Updated: ${updatedAt}</small>`;
-	  li.querySelector("span").onclick = () => editUserScreen(key, value);
-	  usersList.appendChild(li);
-	});
-  } else {
-	usersList.innerHTML = "<li>No users found.</li>";
-  }
+			li.querySelector("span").onclick = () => editUserScreen(key, value);
+			usersList.appendChild(li);
+		});
+	} else {
+		usersList.innerHTML = "<li>No users found.</li>";
+	}
+}
+
+// Replace with your Cloudinary cloud name and unsigned upload preset
+const cloudName = "dpys2kkvc";
+const uploadPreset = "prakash";
+
+function uploadImage(file) {
+	const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+	const formData = new FormData();
+	formData.append("file", file);
+	formData.append("upload_preset", uploadPreset);
+
+	return fetch(url, {
+		method: "POST",
+		body: formData,
+	}).then((response) => response.json());
 }
 
 homeScreen();
