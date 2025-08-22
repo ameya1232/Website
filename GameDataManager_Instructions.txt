@@ -1,0 +1,64 @@
+Game Data Manager Website
+
+Overview
+This website is designed to manage game data for users, including E Level, Color Level, and Face Level information. It uses Firebase for data storage and Cloudinary for image uploads. The UI is modern, responsive, and user-friendly.
+
+Features
+- Create, edit, and delete users
+- Manage E Level, Color Level, and Face Level data for each user
+- Upload images to Cloudinary and store links in Firebase
+- Export user game data to Excel
+- Responsive design with clean UI
+
+Project Structure
+- index.html: Main HTML file, includes Firebase and app scripts
+- app.js: Main JavaScript file, contains all logic and UI rendering
+- styles.css: Custom styles (if used)
+- README.md: Project info
+
+How to Use
+1. Setup
+- Clone or download the project files
+- Open the folder in VS Code
+- Install the Live Server extension (for local testing)
+- Start Live Server and open index.html in your browser
+
+2. Firebase & Cloudinary
+- Update Firebase config in app.js with your project credentials
+- Set up Cloudinary and use your cloud name and unsigned upload preset in app.js
+
+3. Main Page
+- The main page shows two buttons: Create User and List of Users
+- Click Create User to add a new user and enter their data
+- Click List of Users to view, edit, export, or delete users
+
+4. Editing Data
+- For each user, you can edit E Level, Color Level, and Face Level data
+- For Face Level, upload images (stored in Cloudinary)
+- Game data for each item is shown if present
+
+5. Exporting Data
+- In the user list, click the export icon to download the user's game data as an Excel file
+- Only levels with data are included
+- If no data, the button is disabled
+
+6. Deleting Users
+- In the user list, click the trash icon to delete a user
+- Confirm the action in the popup
+
+How to Edit the Website
+- All logic is in app.js. UI is rendered using JavaScript and inline styles.
+- To change Firebase or Cloudinary settings, edit the config variables at the top of app.js
+- To modify UI styles, adjust inline styles in app.js or use styles.css
+- To add new features, follow the structure of existing functions (e.g., add new levels, export formats)
+
+Tips for Developers
+- Keep your Firebase and Cloudinary credentials secure
+- Test changes using Live Server for instant feedback
+- Use browser console for debugging
+- Read comments in app.js for guidance
+
+Contact & Support
+For questions or help, contact the project owner or refer to the README.md for more info.
+
+End of Document
