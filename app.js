@@ -11,6 +11,8 @@ const firebaseConfig = {
 	measurementId: "G-WS3CMWSQDH",
 };
 
+
+// This is a comment
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const storage = firebase.storage();
